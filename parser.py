@@ -7,6 +7,9 @@ from __future__ import print_function
 from itertools import chain
 from nltk.parse import DependencyGraph
 
+from copy import copy
+from random import choice
+
 class PartialParse(object):
     '''A PartialParse is a snapshot of an arc-standard dependency parse
 
@@ -246,8 +249,17 @@ def minibatch_parse(sentences, model, batch_size):
             sentence. Ordering should be the same as in sentences (i.e.,
             arcs[i] should contain the arcs for sentences[i]).
     """
-    pass
-    #return arcs
+    partial_parses = [PartialParse(sentence) for sentence in sentences]
+    unfinished_parses = copy(partial_parses)
+
+    while (len(unfinished_parses) != 0):
+        current_parses = choice(unfinished_parses)
+        current_labels = model.predict(current_parses)
+        for pp, label in zip(current_parses, current_labels):
+            pp.parse_step(*label)
+        unfinished_parses = filter(lambda x : not x.complete(), unfinished_parses)
+
+    return arcs
 
 ### HELPER FUNCTIONS (look here!)
 
