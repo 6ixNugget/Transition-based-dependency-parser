@@ -201,6 +201,7 @@ class PartialParse(object):
             raise ValueError('PartialParse already completed')
         transition_id, deprel = -1, None
 
+
         return transition_id, deprel
 
     def parse(self, td_pairs):
@@ -450,7 +451,6 @@ def test_minibatch_parse():
         [('left', 'k'), ('arcs', 'l'), ('only', 'm'), ('again', 'n')],
     ]
     arcs = minibatch_parse(sentences, DummyModel(), 2)
-    print(arcs)
     # bludgeon the arcs into PartialParse to remain compatible with _test_arcs
     partial_parses = []
     for sentence, sentence_arcs in zip(sentences, arcs):
@@ -487,8 +487,10 @@ word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
     print ("node value")
-    for key, value in graph.nodes.items():
-        print (key,value)
+    for node in graph.nodes.items:
+        print (node['address'])
+        for key,val in node['deps']:
+            print(key,val)
 
     pp = PartialParse(get_sentence_from_graph(graph))
     transition_ids = []
