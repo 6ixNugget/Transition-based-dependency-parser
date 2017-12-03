@@ -257,6 +257,7 @@ def minibatch_parse(sentences, model, batch_size):
         current_labels = model.predict(current_parses)
         for pp, label in zip(current_parses, current_labels):
             try:
+                print(label)
                 pp.parse_step(*label)
             except ValueError:
                 stuck_parses.append(pp)
