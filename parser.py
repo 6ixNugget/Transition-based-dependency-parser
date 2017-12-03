@@ -489,6 +489,7 @@ word_5 tag_5 1 deprel_5
     print ("node value")
     for num, node in graph.nodes.items():
         print (num)
+        print ("type", type(node['deps']))
         for thing in node['deps']:
             print(type(thing))
 
