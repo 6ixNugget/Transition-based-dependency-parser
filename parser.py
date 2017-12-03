@@ -423,7 +423,6 @@ def test_parse():
     Warning: these are not exhaustive
     """
     sentence = tuple(('word_' + str(x), 'tag_' + str(x)) for x in range(1, 4))
-    pp = PartialParse(sentence)
     assert not pp.complete, "PartialParse should not be complete yet"
     arcs = pp.parse([
         (pp.shift_id, None),
@@ -487,7 +486,7 @@ word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
     print ("node value")
-    for key, value in graph_data.node.items():
+    for key, value in graph.node.items():
         print (key,value)
 
     pp = PartialParse(get_sentence_from_graph(graph))
