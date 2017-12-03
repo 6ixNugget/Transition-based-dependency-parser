@@ -116,7 +116,8 @@ class PartialParse(object):
                 1, etc.
         '''
         target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
-        deps = sorted(target_arcs, key = lambda x : x[1])[:n]
+        sorted_arcs = sorted(target_arcs, key = lambda x : x[1])[:n]
+        deps = [x[1] for x in sorted_arcs]
         return deps
 
     def get_n_rightmost_deps(self, sentence_idx, n=None):
@@ -139,7 +140,8 @@ class PartialParse(object):
                 1, etc.
         '''
         target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
-        deps = sorted(target_arcs, key = lambda x : x[1], reverse = True)[:n]
+        sorted_arcs = sorted(target_arcs, key = lambda x : x[1], reverse = True)[:n]
+        deps = [x[1] for x in sorted_arcs]
         return deps
 
     def get_oracle(self, graph):
@@ -335,7 +337,6 @@ def _test_deps(name, pp, stack_idx, n, ex_deps, left=True):
         deps = pp.get_n_leftmost_deps(stack_idx, n=n)
     else:
         deps = pp.get_n_rightmost_deps(stack_idx, n=n)
-    print(deps, ex_deps)
     assert tuple(deps) == tuple(ex_deps), \
         "{} test resulted in dependants {}, expected {}".format(
             name,
