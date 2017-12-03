@@ -257,6 +257,7 @@ def minibatch_parse(sentences, model, batch_size):
         current_labels = model.predict(current_parses)
         for pp, label in zip(current_parses, current_labels):
             pp.parse_step(*label)
+        print(unfinished_parses)
         unfinished_parses = list(filter(lambda x : not x.complete(), unfinished_parses))
 
     return arcs
