@@ -60,7 +60,7 @@ class PartialParse(object):
 
         Assume that the PartialParse is valid
         '''
-        return self.stack == empty_stack
+        return self.stack == self.empty_stack
 
     def parse_step(self, transition_id, deprel=None):
         '''Update the PartialParse with a transition
