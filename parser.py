@@ -251,14 +251,18 @@ def minibatch_parse(sentences, model, batch_size):
     """
     partial_parses = [PartialParse(sentence) for sentence in sentences]
     unfinished_parses = copy(partial_parses)
-
     while (len(unfinished_parses) != 0):
+        stuck_parses = []
         current_parses = [choice(unfinished_parses) for i in range(batch_size)]
         current_labels = model.predict(current_parses)
         for pp, label in zip(current_parses, current_labels):
-            pp.parse_step(*label)
-        unfinished_parses = list(filter(lambda x : not x.complete, unfinished_parses))
-
+            try:
+                pp.parse_step(*label)
+            except ValueError:
+                stuck_parses.append(pp)
+                # TODO figure out why we just simply remove the stuck pp from unfinished list.
+        unfinished_parses = list(filter(lambda x : not x.complete and pp not in stuck_parses, unfinished_parses))
+        
     return arcs
 
 ### HELPER FUNCTIONS (look here!)
