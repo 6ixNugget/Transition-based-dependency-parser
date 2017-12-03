@@ -496,7 +496,8 @@ word_4 tag_4 3 deprel_4
 word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
-    print(get_deps(graph.nodes[3]))
+    for i in get_deps(graph.nodes[3]):
+        print(i)
     pp = PartialParse(get_sentence_from_graph(graph))
     transition_ids = []
     while not pp.complete:
