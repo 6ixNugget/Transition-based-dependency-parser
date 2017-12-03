@@ -207,7 +207,7 @@ class PartialParse(object):
             for key,val in node['deps'].items():
                 print(key,val)
 
-        if len(self.stack) == 1:
+        if len(self.stack) ==1:
             return self.shift_id, None
         elif graph.nodes[stack[-2]]['head'] == stack[-1]:
             return self.left_arc_id, get_rel_name(graph.nodes[stack[-1]], stack[-2])
