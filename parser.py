@@ -423,6 +423,7 @@ def test_parse():
     Warning: these are not exhaustive
     """
     sentence = tuple(('word_' + str(x), 'tag_' + str(x)) for x in range(1, 4))
+    pp = PartialParse(sentence)
     assert not pp.complete, "PartialParse should not be complete yet"
     arcs = pp.parse([
         (pp.shift_id, None),
