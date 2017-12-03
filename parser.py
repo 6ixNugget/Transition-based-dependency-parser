@@ -84,13 +84,13 @@ class PartialParse(object):
             self.stack.append(self.next)
             self.next += 1
         elif transition_id == self.left_arc_id:
-            if len(self.stack) > 2:
+            if len(self.stack) > 1:
                 self.arcs.append((self.stack[-1], self.stack.pop(-2), deprel))
             else:
                 raise ValueError("Adding arcs when there are less than 2 values left in stack.")
         elif transition_id == self.right_arc_id:
             print (self.stack)
-            if len(self.stack) > 2:
+            if len(self.stack) > 1:
                 self.arcs.append((self.stack[-2], self.stack.pop(-1), deprel))
             else:
                 raise ValueError("Adding arcs when there are less than 2 values left in stack.")
