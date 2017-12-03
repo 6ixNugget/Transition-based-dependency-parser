@@ -335,7 +335,7 @@ def _test_deps(name, pp, stack_idx, n, ex_deps, left=True):
         deps = pp.get_n_leftmost_deps(stack_idx, n=n)
     else:
         deps = pp.get_n_rightmost_deps(stack_idx, n=n)
-    print(deps, exdeps)
+    print(deps, ex_deps)
     assert tuple(deps) == tuple(ex_deps), \
         "{} test resulted in dependants {}, expected {}".format(
             name,
