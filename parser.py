@@ -262,7 +262,8 @@ def minibatch_parse(sentences, model, batch_size):
                 stuck_parses.append(pp)
                 # TODO figure out why we just simply remove the stuck pp from unfinished list.
         unfinished_parses = list(filter(lambda x : not x.complete and pp not in stuck_parses, unfinished_parses))
-        
+    
+    arcs = [pp.arcs for pp in partial_parses]
     return arcs
 
 ### HELPER FUNCTIONS (look here!)
