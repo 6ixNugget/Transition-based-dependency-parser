@@ -84,6 +84,8 @@ class PartialParse(object):
                 given the current state
         '''
         if transition_id == self.shift_id:
+            if self.next >= len(self.sentence):
+                raise ValueError("No left element in buffer.")
             self.stack.append(self.next)
             self.next += 1
         elif transition_id == self.left_arc_id:
