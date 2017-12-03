@@ -487,8 +487,8 @@ word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
     print ("node value")
-    for node in graph.nodes.items():
-        print (node['address'])
+    for num, node in graph.nodes.items():
+        print (num)
         for key,val in node['deps']:
             print(key,val)
 
