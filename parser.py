@@ -200,8 +200,8 @@ class PartialParse(object):
         if self.complete:
             raise ValueError('PartialParse already completed')
         transition_id, deprel = -1, None
-        pass
-        #return transition_id, deprel
+
+        return transition_id, deprel
 
     def parse(self, td_pairs):
         """Applies the provided transitions/deprels to this PartialParse
@@ -485,6 +485,9 @@ word_4 tag_4 3 deprel_4
 word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
+    for key, value in graph_data.node.items():
+        print (key,value)
+        
     pp = PartialParse(get_sentence_from_graph(graph))
     transition_ids = []
     while not pp.complete:
