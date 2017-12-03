@@ -44,6 +44,8 @@ class PartialParse(object):
     root_tag = "TOP"
     '''A POS-tag given exclusively to the root'''
 
+    empty_stack = [0]
+
     def __init__(self, sentence):
         # the initial PartialParse of the arc-standard parse
         # **DO NOT ADD ANY MORE ATTRIBUTES TO THIS OBJECT**
@@ -58,8 +60,7 @@ class PartialParse(object):
 
         Assume that the PartialParse is valid
         '''
-        ### BEGIN STUDENT CODE
-        ### END STUDENT CODE
+        return self.stack == empty_stack
 
     def parse_step(self, transition_id, deprel=None):
         '''Update the PartialParse with a transition
@@ -79,9 +80,21 @@ class PartialParse(object):
             ValueError if transition_id is an invalid id or is illegal
                 given the current state
         '''
-        ### BEGIN STUDENT CODE
-        ### END STUDENT CODE
-
+        if transition_id == shift_id:
+            self.stack.append(self.next)
+            self.next += 1
+        elif transition_id == self.left_arc_id:
+            if len(self.stack) > 2:
+                self.arcs.append((self.stack[-1], self.stack.pop(-2), deprel))
+            else:
+                raise ValueError("Adding arcs when there are less than 2 values left in stack.")
+        elif transition_id == self.right_arc_id:
+            if len(self.stack) > 2:
+                self.arcs.append((self.stack[-2], self.stack.pop(-1), deprel))
+            else:
+                raise ValueError("Adding arcs when there are less than 2 values left in stack.")
+        else:
+            raise ValueError("Unknown transition type")
 
     def get_n_leftmost_deps(self, sentence_idx, n=None):
         '''Returns a list of n leftmost dependants of word
@@ -102,9 +115,8 @@ class PartialParse(object):
                 with the leftmost @ 0, immediately right of leftmost @
                 1, etc.
         '''
-        ### BEGIN STUDENT CODE
-        ### END STUDENT CODE
-        return deps
+        pass
+        #return deps
 
     def get_n_rightmost_deps(self, sentence_idx, n=None):
         '''Returns a list of n rightmost dependants of word on the stack @ idx
@@ -125,9 +137,8 @@ class PartialParse(object):
                 with the rightmost @ 0, immediately left of leftmost @
                 1, etc.
         '''
-        ### BEGIN STUDENT CODE
-        ### END STUDENT CODE
-        return deps
+        pass
+        #return deps
 
     def get_oracle(self, graph):
         '''Given a projective dependency graph, determine an appropriate trans
@@ -182,9 +193,8 @@ class PartialParse(object):
         if self.complete:
             raise ValueError('PartialParse already completed')
         transition_id, deprel = -1, None
-        ### BEGIN STUDENT CODE
-        ### END STUDENT CODE
-        return transition_id, deprel
+        pass
+        #return transition_id, deprel
 
     def parse(self, td_pairs):
         """Applies the provided transitions/deprels to this PartialParse
@@ -232,9 +242,8 @@ def minibatch_parse(sentences, model, batch_size):
             sentence. Ordering should be the same as in sentences (i.e.,
             arcs[i] should contain the arcs for sentences[i]).
     """
-    ### YOUR CODE HERE
-    ### END YOUR CODE
-    return arcs
+    pass
+    #return arcs
 
 ### HELPER FUNCTIONS (look here!)
 
