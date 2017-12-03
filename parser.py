@@ -489,8 +489,8 @@ word_5 tag_5 1 deprel_5
     print ("node value")
     for num, node in graph.nodes.items():
         print (num)
-        for key,val in node['deps']:
-            print(key,val)
+        for thing in node['deps']:
+            print(thing)
 
     pp = PartialParse(get_sentence_from_graph(graph))
     transition_ids = []
