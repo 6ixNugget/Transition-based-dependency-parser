@@ -501,6 +501,7 @@ word_5 tag_5 1 deprel_5
     transition_ids = []
     while not pp.complete:
         transition_id, deprel = pp.get_oracle(graph)
+        print(transition_id, deprel)
         transition_ids.append(transition_id)
         pp.parse_step(transition_id, deprel)
         print(pp.stack, pp.arcs)
