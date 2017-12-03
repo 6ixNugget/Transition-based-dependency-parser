@@ -205,9 +205,9 @@ class PartialParse(object):
 
         if len(self.stack) == 1:
             return self.shift_id, None
-        elif graph.nodes[self.stack[-2]]['head'] == self.stack[-1] and len(get_deps(graph.nodes[self.stack[-2]])) == 0:
+        elif graph.nodes[self.stack[-2]]['head'] == self.stack[-1]:
             return self.left_arc_id, get_rel_name(graph.nodes[self.stack[-1]], self.stack[-2])
-        elif graph.nodes[self.stack[-1]]['head'] == self.stack[-2] and len(get_deps(graph.nodes[self.stack[-1]])) == 0:
+        elif graph.nodes[self.stack[-1]]['head'] == self.stack[-2] and self.next > max(get_right_deps(graph.nodes[self.stack[-1]])):
             return self.right_arc_id, get_rel_name(graph.nodes[self.stack[-2]], self.stack[-1])
         else:
             return self.shift_id, None
