@@ -253,7 +253,7 @@ def minibatch_parse(sentences, model, batch_size):
     unfinished_parses = copy(partial_parses)
     while (len(unfinished_parses) != 0):
         stuck_parses = []
-        current_parses = [choice(unfinished_parses) for i in range(batch_size)]
+        current_parses = unfinished_parses[:batch_size]
         current_labels = model.predict(current_parses)
         for pp, label in zip(current_parses, current_labels):
             try:
