@@ -201,6 +201,16 @@ class PartialParse(object):
             raise ValueError('PartialParse already completed')
         transition_id, deprel = -1, None
 
+        for num, node in graph.nodes.items():
+            print (num)
+            print ("type", type(node['deps']))
+            for key,val in node['deps'].items():
+                print(key,val)
+
+        if len(stack) == 1:
+            return self.shift_id, None
+        elif graph.nodes[stack[-2]]['head'] == stack[-1]:
+            return self.left_arc_id, get_left_deps(graph.nodes[stack[-1]])
 
         return transition_id, deprel
 
@@ -486,13 +496,7 @@ word_4 tag_4 3 deprel_4
 word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
-    print ("node value")
-    for num, node in graph.nodes.items():
-        print (num)
-        print ("type", type(node['deps']))
-        for key,val in node['deps'].items():
-            print(key,val)
-
+    print(get_deps(graph.nodes[3]))
     pp = PartialParse(get_sentence_from_graph(graph))
     transition_ids = []
     while not pp.complete:
