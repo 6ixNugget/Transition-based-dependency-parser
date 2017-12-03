@@ -487,7 +487,7 @@ word_5 tag_5 1 deprel_5
 """
     graph = DependencyGraph(graph_data)
     print ("node value")
-    for key, value in graph.node.items():
+    for key, value in graph.nodes.items():
         print (key,value)
 
     pp = PartialParse(get_sentence_from_graph(graph))
