@@ -89,7 +89,6 @@ class PartialParse(object):
             else:
                 raise ValueError("Adding arcs when there are less than 2 values left in stack.")
         elif transition_id == self.right_arc_id:
-            print (self.stack)
             if len(self.stack) > 1:
                 self.arcs.append((self.stack[-2], self.stack.pop(-1), deprel))
             else:
@@ -116,8 +115,9 @@ class PartialParse(object):
                 with the leftmost @ 0, immediately right of leftmost @
                 1, etc.
         '''
-        pass
-        #return deps
+        target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
+        deps = sorted(target_arcs, key = lambda x : x[1])[:n]
+        return deps
 
     def get_n_rightmost_deps(self, sentence_idx, n=None):
         '''Returns a list of n rightmost dependants of word on the stack @ idx
@@ -138,8 +138,9 @@ class PartialParse(object):
                 with the rightmost @ 0, immediately left of leftmost @
                 1, etc.
         '''
-        pass
-        #return deps
+        target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
+        deps = sorted(target_arcs, key = lambda x : x[1], reverse = True)[:n]
+        return deps
 
     def get_oracle(self, graph):
         '''Given a projective dependency graph, determine an appropriate trans
