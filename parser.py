@@ -80,7 +80,7 @@ class PartialParse(object):
             ValueError if transition_id is an invalid id or is illegal
                 given the current state
         '''
-        if transition_id == shift_id:
+        if transition_id == self.shift_id:
             self.stack.append(self.next)
             self.next += 1
         elif transition_id == self.left_arc_id:
