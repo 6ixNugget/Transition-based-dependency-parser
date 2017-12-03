@@ -210,9 +210,11 @@ class PartialParse(object):
         if len(stack) == 1:
             return self.shift_id, None
         elif graph.nodes[stack[-2]]['head'] == stack[-1]:
-            return self.left_arc_id, get_left_deps(graph.nodes[stack[-1]])
-
-        return transition_id, deprel
+            return self.left_arc_id, get_rel_name(graph.nodes[stack[-1]], stack[-2])
+        elif graph.nodes[stack[-1]]['head'] == stack[-2]:
+            return self.right_arc_id, get_rel_name(graph.nodes[stack[-2]], stack[-1])
+        else:
+            return self.shift_id, None
 
     def parse(self, td_pairs):
         """Applies the provided transitions/deprels to this PartialParse
@@ -301,6 +303,11 @@ def get_left_deps(node):
 def get_right_deps(node):
     '''Get the arc-right dependants of a node from a DependencyGraph'''
     return (dep for dep in get_deps(node) if dep > node['address'])
+
+def get_rel_name(node, dep):
+    for name, rel in node['deps'].items():
+        if dep in rel:
+            return name
 
 ### TESTING
 
