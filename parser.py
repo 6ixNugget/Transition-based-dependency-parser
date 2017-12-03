@@ -118,7 +118,7 @@ class PartialParse(object):
                 with the leftmost @ 0, immediately right of leftmost @
                 1, etc.
         '''
-        target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
+        target_arcs = list(filter(lambda x : x[0] == sentence_idx, self.arcs))
         sorted_arcs = sorted(target_arcs, key = lambda x : x[1])[:n]
         deps = [x[1] for x in sorted_arcs]
         return deps
@@ -142,7 +142,7 @@ class PartialParse(object):
                 with the rightmost @ 0, immediately left of leftmost @
                 1, etc.
         '''
-        target_arcs = filter(lambda x : x[0] == sentence_idx, self.arcs)
+        target_arcs = list(filter(lambda x : x[0] == sentence_idx, self.arcs))
         sorted_arcs = sorted(target_arcs, key = lambda x : x[1], reverse = True)[:n]
         deps = [x[1] for x in sorted_arcs]
         return deps
@@ -257,7 +257,7 @@ def minibatch_parse(sentences, model, batch_size):
         current_labels = model.predict(current_parses)
         for pp, label in zip(current_parses, current_labels):
             pp.parse_step(*label)
-        unfinished_parses = filter(lambda x : not x.complete(), unfinished_parses)
+        unfinished_parses = list(filter(lambda x : not x.complete(), unfinished_parses))
 
     return arcs
 
