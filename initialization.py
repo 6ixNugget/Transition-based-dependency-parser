@@ -30,10 +30,9 @@ def xavier_weight_init():
             	tf.Tensor of specified shape sampled from the
              	Xavier distribution.
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        
         return out
-    # Returns defined initializer function.
+    
     return _xavier_initializer
 
 def test_initialization_basic():

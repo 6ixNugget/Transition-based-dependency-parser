@@ -81,8 +81,11 @@ class ParserModel(Model):
 
         (Don't change the variable names)
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        self.word_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_word_features))
+        self.tag_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_tag_features))
+        self.deprel_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_deprel_features))
+        self.class_placeholder = tf.placeholder(tf.float32, shape=(None, self.config.n_classes))
+        self.dropout_placeholder = tf.placeholder(tf.float32)
 
     def create_feed_dict(
             self, word_id_batch, tag_id_batch, deprel_id_batch,
@@ -109,9 +112,17 @@ class ParserModel(Model):
         Returns:
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        feed_dict = {
+            self.word_id_placeholder: word_id_batch,
+            self.tag_id_placeholder: tag_id_batch,
+            self.deprel_id_placeholder: deprel_id_batch,
+            self.class_placeholder: class_batch,
+            self.dropout_placeholder: dropout
+        }
+        feed_dict = dict((k, v) for k, v in feed_dict.items() if v is not None)
         return feed_dict
+
+
 
     def add_embeddings(self):
         """Creates embeddings that map word, tag, deprels to vectors
@@ -144,8 +155,23 @@ class ParserModel(Model):
             deprel_embeddings : tf.float32
                 (None, n_deprel_features * embed_size)
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        word_embedding_matrix = tf.get_variable("word_embedding_matrix", 
+            [self.config.n_word_features, self.config.embed_size], 
+            initializer=tf.constant_initializer(self.word_embeddings))
+
+        tag_embedding_matrix = tf.get_variable("tag_embedding_matrix", 
+            [self.config.n_tag_ids, self.config.embed_size], 
+            initializer=tf.contrib.layers.xavier_initializer())
+
+        deprel_embedding_matrix = tf.get_variable("deprel_embedding_matrix", 
+            [self.config.n_deprel_ids, self.config.embed_size], 
+            initializer=tf.contrib.layers.xavier_initializer())
+
+
+        word_embeddings = tf.nn.embedding_lookup(word_embedding_matrix, word_ids)
+        tag_embeddings = tf.nn.embedding_lookup(tag_embedding_matrix, word_ids)
+        deprel_embeddings = tf.nn.embedding_lookup(deprel_embedding_matrix, word_ids)
+
         return word_embeddings, tag_embeddings, deprel_embeddings
 
     def add_prediction_op(self):
