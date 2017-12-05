@@ -9,6 +9,7 @@ import time
 from itertools import islice
 from sys import stdout
 from tempfile import NamedTemporaryFile
+import sys
 
 import tensorflow as tf
 
@@ -156,7 +157,7 @@ class ParserModel(Model):
                 (None, n_deprel_features * embed_size)
         """
         word_embedding_matrix = tf.get_variable("word_embedding_matrix", 
-            [self.config.n_word_features, self.config.embed_size], 
+            [self.config.n_word_ids, self.config.embed_size], 
             initializer=tf.constant_initializer(self.word_embeddings))
 
         tag_embedding_matrix = tf.get_variable("tag_embedding_matrix", 
@@ -168,9 +169,13 @@ class ParserModel(Model):
             initializer=tf.contrib.layers.xavier_initializer())
 
 
-        word_embeddings = tf.nn.embedding_lookup(word_embedding_matrix, word_ids)
-        tag_embeddings = tf.nn.embedding_lookup(tag_embedding_matrix, word_ids)
-        deprel_embeddings = tf.nn.embedding_lookup(deprel_embedding_matrix, word_ids)
+        word_lookup = tf.nn.embedding_lookup(word_embedding_matrix, self.word_id_placeholder)
+        tag_lookup = tf.nn.embedding_lookup(tag_embedding_matrix, self.tag_id_placeholder)
+        deprel_lookup = tf.nn.embedding_lookup(deprel_embedding_matrix, self.deprel_id_placeholder)
+
+        word_embeddings = tf.reshape(word_lookup, [-1, self.config.n_word_features * self.config.embed_size])
+        tag_embeddings = tf.reshape(tag_lookup, [-1, self.config.n_tag_features * self.config.embed_size])
+        deprel_embeddings = tf.reshape(deprel_lookup, [-1, self.config.n_deprel_features * self.config.embed_size])
 
         return word_embeddings, tag_embeddings, deprel_embeddings
 
@@ -207,8 +212,17 @@ class ParserModel(Model):
             pred: tf.Tensor of shape (batch_size, n_classes)
         """
         x_w, x_t, x_d = self.add_embeddings()
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+
+        w_w = tf.get_variable("W_w", [self.config.n_word_features * self.config.embed_size, self.config.hidden_size])
+        w_t = tf.get_variable("W_t", [self.config.n_tag_features * self.config.embed_size, self.config.hidden_size])
+        w_d = tf.get_variable("W_d", [self.config.n_deprel_features * self.config.embed_size, self.config.hidden_size])
+        b1 = tf.get_variable("b1", [self.config.hidden_size])
+        b2 = tf.get_variable("b2", [self.config.n_classes])
+        u = tf.get_variable("U", [self.config.hidden_size, self.config.n_classes])
+        
+        h = tf.nn.relu(tf.matmul(x_w, w_w) + tf.matmul(x_t, w_t) + tf.matmul(x_d, w_d) + b1, name="relu")
+        h_drop = tf.nn.dropout(h, self.dropout_placeholder, name="dropout")
+        pred = tf.matmul(h_drop, u) + b2
         return pred
 
     def add_loss_op(self, pred):
@@ -227,8 +241,8 @@ class ParserModel(Model):
         Returns:
             loss: A 0-d tensor (scalar)
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        cross_entropy_loss = tf.nn.softmax_cross_entropy_with_logits(labels=self.class_placeholder, logits=pred)
+        loss = tf.reduce_mean(cross_entropy_loss)
         return loss
 
     def add_training_op(self, loss):
@@ -246,8 +260,7 @@ class ParserModel(Model):
         Returns:
             train_op: The Op for training.
         """
-        ### BEGIN YOUR CODE
-        ### END YOUR CODE
+        train_op = tf.train.AdamOptimizer(self.config.lr).minimize(loss)
         return train_op
 
     def fit_batch(
@@ -387,4 +400,7 @@ def main(debug):
     return 0
 
 if __name__ == '__main__':
-    main(True)
+    if len(sys.argv) > 1 and sys.argv[1] == '-r':
+        main(False)
+    else:
+        main(True)
