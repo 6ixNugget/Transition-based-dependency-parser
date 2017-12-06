@@ -63,7 +63,9 @@ class PartialParse(object):
 
         Assume that the PartialParse is valid
         '''
+        ### BEGIN STUDENT CODE
         return self.stack == self.empty_stack and self.next == len(self.sentence)
+        ### END STUDENT CODE
 
     def parse_step(self, transition_id, deprel=None):
         '''Update the PartialParse with a transition
@@ -83,6 +85,7 @@ class PartialParse(object):
             ValueError if transition_id is an invalid id or is illegal
                 given the current state
         '''
+        ### BEGIN STUDENT CODE
         if transition_id == self.shift_id:
             if self.next >= len(self.sentence):
                 raise ValueError("No element left in buffer.")
@@ -100,6 +103,7 @@ class PartialParse(object):
                 raise ValueError("Adding arcs when there are less than 2 values left in stack.")
         else:
             raise ValueError("Unknown transition type")
+        ### END STUDENT CODE
 
     def get_n_leftmost_deps(self, sentence_idx, n=None):
         '''Returns a list of n leftmost dependants of word
@@ -120,9 +124,11 @@ class PartialParse(object):
                 with the leftmost @ 0, immediately right of leftmost @
                 1, etc.
         '''
+        ### BEGIN STUDENT CODE
         target_arcs = list(filter(lambda x : x[0] == sentence_idx, self.arcs))
         sorted_arcs = sorted(target_arcs, key = lambda x : x[1])[:n]
         deps = [x[1] for x in sorted_arcs]
+        ### END STUDENT CODE
         return deps
 
     def get_n_rightmost_deps(self, sentence_idx, n=None):
@@ -144,9 +150,11 @@ class PartialParse(object):
                 with the rightmost @ 0, immediately left of leftmost @
                 1, etc.
         '''
+        ### BEGIN STUDENT CODE
         target_arcs = list(filter(lambda x : x[0] == sentence_idx, self.arcs))
         sorted_arcs = sorted(target_arcs, key = lambda x : x[1], reverse = True)[:n]
         deps = [x[1] for x in sorted_arcs]
+        ### END STUDENT CODE
         return deps
 
     def get_oracle(self, graph):
@@ -203,6 +211,7 @@ class PartialParse(object):
             raise ValueError('PartialParse already completed')
         transition_id, deprel = -1, None
 
+        ### BEGIN STUDENT CODE
         if len(self.stack) == 1:
             return self.shift_id, None
         elif graph.nodes[self.stack[-2]]['head'] == self.stack[-1]:
@@ -213,6 +222,8 @@ class PartialParse(object):
             return self.right_arc_id, get_rel_name(graph.nodes[self.stack[-2]], self.stack[-1])
         else:
             return self.shift_id, None
+        ### END STUDENT CODE
+        return transition_id, deprel
 
     def parse(self, td_pairs):
         """Applies the provided transitions/deprels to this PartialParse
@@ -260,6 +271,7 @@ def minibatch_parse(sentences, model, batch_size):
             sentence. Ordering should be the same as in sentences (i.e.,
             arcs[i] should contain the arcs for sentences[i]).
     """
+    ### YOUR CODE HERE
     partial_parses = [PartialParse(sentence) for sentence in sentences]
     unfinished_parses = copy(partial_parses)
     while (len(unfinished_parses) != 0):
@@ -275,6 +287,7 @@ def minibatch_parse(sentences, model, batch_size):
         unfinished_parses = list(filter(lambda x : not x.complete and pp not in stuck_parses, unfinished_parses))
     
     arcs = [pp.arcs for pp in partial_parses]
+    ### END YOUR CODE
     return arcs
 
 ### HELPER FUNCTIONS (look here!)

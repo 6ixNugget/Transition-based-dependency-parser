@@ -82,11 +82,13 @@ class ParserModel(Model):
 
         (Don't change the variable names)
         """
+        ### BEGIN YOUR CODE
         self.word_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_word_features))
         self.tag_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_tag_features))
         self.deprel_id_placeholder = tf.placeholder(tf.int32, shape=(None, self.config.n_deprel_features))
         self.class_placeholder = tf.placeholder(tf.float32, shape=(None, self.config.n_classes))
         self.dropout_placeholder = tf.placeholder(tf.float32)
+        ### END YOUR CODE
 
     def create_feed_dict(
             self, word_id_batch, tag_id_batch, deprel_id_batch,
@@ -113,6 +115,7 @@ class ParserModel(Model):
         Returns:
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
+        ### BEGIN YOUR CODE
         feed_dict = {
             self.word_id_placeholder: word_id_batch,
             self.tag_id_placeholder: tag_id_batch,
@@ -121,6 +124,7 @@ class ParserModel(Model):
             self.dropout_placeholder: dropout
         }
         feed_dict = dict((k, v) for k, v in feed_dict.items() if v is not None)
+        ### END YOUR CODE
         return feed_dict
 
 
@@ -156,17 +160,20 @@ class ParserModel(Model):
             deprel_embeddings : tf.float32
                 (None, n_deprel_features * embed_size)
         """
+        ### BEGIN YOUR CODE
+        xavier_initializer = xavier_weight_init()
+
         word_embedding_matrix = tf.get_variable("word_embedding_matrix", 
             [self.config.n_word_ids, self.config.embed_size], 
             initializer=tf.constant_initializer(self.word_embeddings))
 
         tag_embedding_matrix = tf.get_variable("tag_embedding_matrix", 
             [self.config.n_tag_ids, self.config.embed_size], 
-            initializer=tf.contrib.layers.xavier_initializer())
+            initializer=xavier_initializer)
 
         deprel_embedding_matrix = tf.get_variable("deprel_embedding_matrix", 
             [self.config.n_deprel_ids, self.config.embed_size], 
-            initializer=tf.contrib.layers.xavier_initializer())
+            initializer=xavier_initializer)
 
 
         word_lookup = tf.nn.embedding_lookup(word_embedding_matrix, self.word_id_placeholder)
@@ -176,7 +183,7 @@ class ParserModel(Model):
         word_embeddings = tf.reshape(word_lookup, [-1, self.config.n_word_features * self.config.embed_size])
         tag_embeddings = tf.reshape(tag_lookup, [-1, self.config.n_tag_features * self.config.embed_size])
         deprel_embeddings = tf.reshape(deprel_lookup, [-1, self.config.n_deprel_features * self.config.embed_size])
-
+        ### END YOUR CODE
         return word_embeddings, tag_embeddings, deprel_embeddings
 
     def add_prediction_op(self):
@@ -211,6 +218,7 @@ class ParserModel(Model):
         Returns:
             pred: tf.Tensor of shape (batch_size, n_classes)
         """
+        ### BEGIN YOUR CODE
         x_w, x_t, x_d = self.add_embeddings()
 
         w_w = tf.get_variable("W_w", [self.config.n_word_features * self.config.embed_size, self.config.hidden_size])
@@ -223,6 +231,7 @@ class ParserModel(Model):
         h = tf.nn.relu(tf.matmul(x_w, w_w) + tf.matmul(x_t, w_t) + tf.matmul(x_d, w_d) + b1, name="relu")
         h_drop = tf.nn.dropout(h, self.dropout_placeholder, name="dropout")
         pred = tf.matmul(h_drop, u) + b2
+        ### END YOUR CODE
         return pred
 
     def add_loss_op(self, pred):
@@ -241,8 +250,10 @@ class ParserModel(Model):
         Returns:
             loss: A 0-d tensor (scalar)
         """
+        ### BEGIN YOUR CODE
         cross_entropy_loss = tf.nn.softmax_cross_entropy_with_logits(labels=self.class_placeholder, logits=pred)
         loss = tf.reduce_mean(cross_entropy_loss)
+        ### END YOUR CODE
         return loss
 
     def add_training_op(self, loss):
@@ -260,7 +271,9 @@ class ParserModel(Model):
         Returns:
             train_op: The Op for training.
         """
+        ### BEGIN YOUR CODE
         train_op = tf.train.AdamOptimizer(self.config.lr).minimize(loss)
+        ### END YOUR CODE
         return train_op
 
     def fit_batch(
