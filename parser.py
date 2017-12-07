@@ -47,8 +47,6 @@ class PartialParse(object):
     root_tag = "TOP"
     '''A POS-tag given exclusively to the root'''
 
-    empty_stack = [0]
-
     def __init__(self, sentence):
         # the initial PartialParse of the arc-standard parse
         # **DO NOT ADD ANY MORE ATTRIBUTES TO THIS OBJECT**
@@ -64,7 +62,8 @@ class PartialParse(object):
         Assume that the PartialParse is valid
         '''
         ### BEGIN STUDENT CODE
-        return self.stack == self.empty_stack and self.next == len(self.sentence)
+        empty_stack = [0]
+        return self.stack == empty_stack and self.next == len(self.sentence)
         ### END STUDENT CODE
 
     def parse_step(self, transition_id, deprel=None):
