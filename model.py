@@ -249,12 +249,13 @@ class ParserModel(Model):
             pred = h2_output
         else:
         """
-        w_w = tf.get_variable("W_w", [self.config.n_word_features * self.config.embed_size, self.config.hidden_size])
-        w_t = tf.get_variable("W_t", [self.config.n_tag_features * self.config.embed_size, self.config.hidden_size])
-        w_d = tf.get_variable("W_d", [self.config.n_deprel_features * self.config.embed_size, self.config.hidden_size])
-        b1 = tf.get_variable("b1", [self.config.hidden_size])
-        b2 = tf.get_variable("b2", [self.config.n_classes])
-        u = tf.get_variable("U", [self.config.hidden_size, self.config.n_classes])
+        xavier_initializer = xavier_weight_init()
+        w_w = tf.get_variable("W_w", [self.config.n_word_features * self.config.embed_size, self.config.hidden_size], initializer=xavier_initializer)
+        w_t = tf.get_variable("W_t", [self.config.n_tag_features * self.config.embed_size, self.config.hidden_size], initializer=xavier_initializer)
+        w_d = tf.get_variable("W_d", [self.config.n_deprel_features * self.config.embed_size, self.config.hidden_size], initializer=xavier_initializer)
+        b1 = tf.get_variable("b1", [self.config.hidden_size], initializer=tf.zeros_initializer())
+        b2 = tf.get_variable("b2", [self.config.n_classes], initializer=tf.zeros_initializer())
+        u = tf.get_variable("U", [self.config.hidden_size, self.config.n_classes], initializer=xavier_initializer)
 
         h = tf.nn.relu(tf.matmul(x_w, w_w) + tf.matmul(x_t, w_t) + tf.matmul(x_d, w_d) + b1, name="relu")
         h_drop = tf.nn.dropout(h, self.dropout_placeholder, name="dropout")
